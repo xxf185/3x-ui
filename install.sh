@@ -188,6 +188,6 @@ install_x-ui() {
     echo -e "----------------------------------------------"
 }
 
-echo -e "${green}开始安装${plain}"
+echo -e "${green}Running...${plain}"
 install_base
 install_x-ui $1

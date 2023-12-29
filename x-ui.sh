@@ -897,12 +897,12 @@ iplimit_remove_conflicts() {
 iplimit_main() {
     echo -e "\n${green}\t1.${plain} 安装Fail2ban和IP限制"
     echo -e "${green}\t2.${plain} 更改限制期限"
-    echo -e "${green}\t3.${plain} 幸运数字图片"
+    echo -e "${green}\t3.${plain} 解除所有人的IP限制 "
     echo -e "${green}\t4.${plain} 查看日志"
     echo -e "${green}\t5.${plain} fail2ban状态"
     echo -e "${green}\t6.${plain} 解除IP限制"
     echo -e "${green}\t0.${plain} 返回主菜单"
-    read -p "选择 " choice
+    read -p "选择: " choice
     case "$choice" in
         0)
             show_menu ;;
@@ -923,7 +923,7 @@ iplimit_main() {
             fi
             iplimit_main ;;
         3)
-            confirm "解除所有人的 IP 限制" "y"
+            confirm "解除所有人的IP限制" "y"
             if [[ $? == 0 ]]; then
                 fail2ban-client reload --restart --unban 3x-ipl
                 echo -e "${green}所有用户已成功解除${plain}"
@@ -1020,13 +1020,13 @@ remove_iplimit(){
                 fedora)
                     dnf remove fail2ban -y;;
                 *)
-                    echo -e "${red}不支持的操作系统。 请手动卸载 Fail2ban。${plain}\n"
+                    echo -e "${red}不支持的操作系统.请手动卸载Fail2ban。${plain}\n"
                     exit 1 ;;
             esac
-            echo -e "${green}Fail2ban 和 IP 限制删除成功！${plain}\n"
+            echo -e "${green}Fail2ban和 IP限制删除成功！${plain}\n"
             before_show_menu ;;
         0) 
-            echo -e "${yellow}取消。${plain}\n"
+            echo -e "${yellow}取消${plain}\n"
             iplimit_main ;;
         *) 
             echo -e "${red}选择错误${plain}\n"

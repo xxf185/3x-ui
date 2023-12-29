@@ -457,9 +457,9 @@ show_status() {
 show_enable_status() {
     check_enabled
     if [[ $? == 0 ]]; then
-        echo -e "自动启动: ${green}Yes${plain}"
+        echo -e "开机自启: ${green}Yes${plain}"
     else
-        echo -e "自动启动: ${red}No${plain}"
+        echo -e "开机自启: ${red}No${plain}"
     fi
 }
 
@@ -535,7 +535,7 @@ open_ports() {
 
 update_geo() {
     local defaultBinFolder="/usr/local/x-ui/bin"
-    read -p "请输入 x-ui bin 文件夹路径。 默认留空。(默认: '${defaultBinFolder}')" binFolder
+    read -p "请输入 x-ui bin 文件夹路径(默认: '${defaultBinFolder}')" binFolder
     binFolder=${binFolder:-${defaultBinFolder}}
     if [[ ! -d ${binFolder} ]]; then
         LOGE "文件夹 ${binFolder} 不存在！"
@@ -589,7 +589,7 @@ ssl_cert_issue_main() {
             ;;
         3)
             local domain=""
-            read -p "请输入您的域名以更新SSL 证书: " domain
+            read -p "输入域名更新证书: " domain
             ~/.acme.sh/acme.sh --renew -d ${domain} --force ;;
         *) echo "选择无效" ;;
     esac
@@ -614,11 +614,11 @@ ssl_cert_issue() {
         fedora)
             dnf -y update && dnf -y install socat ;;
         *)
-            echo -e "${red}不支持的操作系统。 请检查脚本并手动安装必要的软件包。${plain}\n"
+            echo -e "${red}不支持的操作系统${plain}\n"
             exit 1 ;;
     esac
     if [ $? -ne 0 ]; then
-        LOGE "安装socat失败，请检查日志"
+        LOGE "安装socat失败"
         exit 1
     else
         LOGI "安装socat成功..."
@@ -633,11 +633,11 @@ ssl_cert_issue() {
 
     if [ ${currentCert} == ${domain} ]; then
         local certInfo=$(~/.acme.sh/acme.sh --list)
-        LOGE "系统已经有证书，无法再次颁发，当前证书详细信息:"
+        LOGE "系统已经有证书.证书详细信息:"
         LOGI "$certInfo"
         exit 1
     else
-        LOGI "您的域名现在已准备好颁发证书..."
+        LOGI "域名现在已有证书..."
     fi
 
     # create a directory for install cert
@@ -781,7 +781,7 @@ warp_cloudflare() {
         0)
             show_menu ;;
         1) 
-            bash <(curl -sSL https://raw.githubusercontent.com/hamid-gh98/x-ui-scripts/main/install_warp_proxy.sh)
+            bash <(curl -sSL https://raw.githubusercontent.com//x-ui-scripts/main/install_warp_proxy.sh)
             ;;
         2) 
             warp a

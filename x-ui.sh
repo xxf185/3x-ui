@@ -1055,39 +1055,39 @@ show_usage() {
 show_menu() {
     echo -e "
   ${green}3x-ui 面板管理脚本${plain}
-  ${green}0.${plain} Exit Script
+  ${green}0.${plain} 退出脚本
 ————————————————
-  ${green}1.${plain} Install
-  ${green}2.${plain} Update
-  ${green}3.${plain} Custom Version
-  ${green}4.${plain} Uninstall
+  ${green}1.${plain} 安装 x-ui
+  ${green}2.${plain} 更新 x-ui
+  ${green}3.${plain} 定制版本
+  ${green}4.${plain} 卸载 x-ui
 ————————————————
-  ${green}5.${plain} Reset Username & Password & Secret Token
-  ${green}6.${plain} Reset Settings
-  ${green}7.${plain} Change Port
-  ${green}8.${plain} View Current Settings
+  ${green}5.${plain} 重置用户名密码
+  ${green}6.${plain} 重置面板设置
+  ${green}7.${plain} 设置面板端口
+  ${green}8.${plain} 查看当前面板设置
 ————————————————
-  ${green}9.${plain} Start
-  ${green}10.${plain} Stop
-  ${green}11.${plain} Restart
-  ${green}12.${plain} Check Status
-  ${green}13.${plain} Check Logs
+  ${green}9.${plain} 启动 x-ui
+  ${green}10.${plain} 停止 x-ui
+  ${green}11.${plain} 重启 x-ui
+  ${green}12.${plain} 查看 x-ui 状态
+  ${green}13.${plain} 查看 x-ui 日志
 ————————————————
-  ${green}14.${plain} Enable x-ui On System Startup
-  ${green}15.${plain} Disable x-ui On System Startup
+  ${green}14.${plain} 设置 x-ui 开机自启
+  ${green}15.${plain} 取消 x-ui 开机自启
 ————————————————
-  ${green}16.${plain} SSL Certificate Management
-  ${green}17.${plain} Cloudflare SSL Certificate
-  ${green}18.${plain} IP Limit Management
-  ${green}19.${plain} WARP Management
+  ${green}16.${plain} SSL证书管理
+  ${green}17.${plain} Cloudflare SSL 证书
+  ${green}18.${plain} IP限制管理
+  ${green}19.${plain} WARP 管理
 ————————————————
-  ${green}20.${plain} Enable BBR 
-  ${green}21.${plain} Update Geo Files
-  ${green}22.${plain} Active Firewall and open ports
-  ${green}23.${plain} Speedtest by Ookla
+  ${green}20.${plain} 一键安装 bbr (最新内核)
+  ${green}21.${plain} 更新Geo文件
+  ${green}22.${plain} 防火墙管理
+  ${green}23.${plain} 速度测试
 "
     show_status
-    echo && read -p "Please enter your selection [0-23]: " num
+    echo && read -p "选择 [0-23]: " num
 
     case "${num}" in
     0)
@@ -1163,7 +1163,7 @@ show_menu() {
         run_speedtest
         ;;    
     *)
-        LOGE "Please enter the correct number [0-23]"
+        LOGE "选择 [0-23]"
         ;;
     esac
 }

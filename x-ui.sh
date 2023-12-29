@@ -705,10 +705,10 @@ ssl_cert_issue_CF() {
     if [ $? -eq 0 ]; then
         # check for acme.sh first
         if ! command -v ~/.acme.sh/acme.sh &>/dev/null; then
-            echo "acme.sh could not be found. we will install it"
+            echo "acme安装中"
             install_acme
             if [ $? -ne 0 ]; then
-                LOGE "install acme failed, please check logs"
+                LOGE "安装acme失败，请检查日志"
                 exit 1
             fi
         fi
@@ -818,7 +818,7 @@ run_speedtest() {
         fi
         
         if [[ -z $pkg_manager ]]; then
-            echo "Error: Package manager not found. You may need to install Speedtest manually."
+            echo "错误：找不到包管理器。 您可能需要手动安装 Speedtest。"
             return 1
         else
             curl -s $speedtest_install_script | bash
@@ -895,41 +895,41 @@ iplimit_remove_conflicts() {
 }
 
 iplimit_main() {
-    echo -e "\n${green}\t1.${plain} Install Fail2ban and configure IP Limit"
-    echo -e "${green}\t2.${plain} Change Ban Duration"
-    echo -e "${green}\t3.${plain} Unban Everyone"
-    echo -e "${green}\t4.${plain} Check Logs"
-    echo -e "${green}\t5.${plain} fail2ban status"
-    echo -e "${green}\t6.${plain} Uninstall IP Limit"
-    echo -e "${green}\t0.${plain} Back to Main Menu"
-    read -p "Choose an option: " choice
+    echo -e "\n${green}\t1.${plain} 安装Fail2ban和IP限制"
+    echo -e "${green}\t2.${plain} 更改限制期限"
+    echo -e "${green}\t3.${plain} 幸运数字图片"
+    echo -e "${green}\t4.${plain} 查看日志"
+    echo -e "${green}\t5.${plain} fail2ban状态"
+    echo -e "${green}\t6.${plain} 解除IP限制"
+    echo -e "${green}\t0.${plain} 返回主菜单"
+    read -p "选择 " choice
     case "$choice" in
         0)
             show_menu ;;
         1)
-            confirm "Proceed with installation of Fail2ban & IP Limit?" "y"
+            confirm "安装 Fail2ban 和 IP 限制?" "y"
             if [[ $? == 0 ]]; then
                 install_iplimit
             else
                 iplimit_main
             fi ;;
         2)
-            read -rp "Please enter new Ban Duration in Minutes [default 5]: " NUM
+            read -rp "请输入新的限制持续时间（以分钟为单位）[默认 5]: " NUM
             if [[ $NUM =~ ^[0-9]+$ ]]; then
                 create_iplimit_jails ${NUM}
                 systemctl restart fail2ban
             else
-                echo -e "${red}${NUM} is not a number! Please, try again.${plain}"
+                echo -e "${red}${NUM} 不是一个数字！ 请再试一次。${plain}"
             fi
             iplimit_main ;;
         3)
-            confirm "Proceed with Unbanning everyone from IP Limit jail?" "y"
+            confirm "解除所有人的 IP 限制" "y"
             if [[ $? == 0 ]]; then
                 fail2ban-client reload --restart --unban 3x-ipl
-                echo -e "${green}All users Unbanned successfully.${plain}"
+                echo -e "${green}所有用户已成功解除${plain}"
                 iplimit_main
             else
-                echo -e "${yellow}Cancelled.${plain}"
+                echo -e "${yellow}取消。${plain}"
             fi
             iplimit_main ;;
         4)
@@ -947,7 +947,7 @@ iplimit_main() {
 
 install_iplimit() {
     if ! command -v fail2ban-client &>/dev/null; then
-        echo -e "${green}Fail2ban is not installed. Installing now...!${plain}\n"
+        echo -e "${green}未安装 Fail2ban。 正在安装...!${plain}\n"
         # Check the OS and install necessary packages
         case "${release}" in
             ubuntu|debian)
@@ -957,15 +957,15 @@ install_iplimit() {
             fedora)
                 dnf -y update && dnf -y install fail2ban ;;
             *)
-                echo -e "${red}Unsupported operating system. Please check the script and install the necessary packages manually.${plain}\n"
+                echo -e "${red}不支持的操作系统。 请检查脚本并手动安装必要的软件包.${plain}\n"
                 exit 1 ;;
         esac
-        echo -e "${green}Fail2ban installed successfully!${plain}\n"
+        echo -e "${green}Fail2ban安装成功!${plain}\n"
     else
-        echo -e "${yellow}Fail2ban is already installed.${plain}\n"
+        echo -e "${yellow}Fail2ban 已安装。${plain}\n"
     fi
 
-    echo -e "${green}Configuring IP Limit...${plain}\n"
+    echo -e "${green}配置 IP 限制...${plain}\n"
 
     # make sure there's no conflict for jail files
     iplimit_remove_conflicts
@@ -992,22 +992,22 @@ install_iplimit() {
     fi
     systemctl enable fail2ban
 
-    echo -e "${green}IP Limit installed and configured successfully!${plain}\n"
+    echo -e "${green}IP 限制安装并配置成功!${plain}\n"
     before_show_menu
 }
 
 remove_iplimit(){
-    echo -e "${green}\t1.${plain} Only remove IP Limit configurations"
-    echo -e "${green}\t2.${plain} Uninstall Fail2ban and IP Limit"
-    echo -e "${green}\t0.${plain} Abort"
-    read -p "Choose an option: " num
+    echo -e "${green}\t1.${plain} 仅删除 IP 限制配置"
+    echo -e "${green}\t2.${plain} 卸载 Fail2ban 和 IP 限制"
+    echo -e "${green}\t0.${plain} 中止"
+    read -p "选择: " num
     case "$num" in
         1) 
             rm -f /etc/fail2ban/filter.d/3x-ipl.conf
             rm -f /etc/fail2ban/action.d/3x-ipl.conf
             rm -f /etc/fail2ban/jail.d/3x-ipl.conf
             systemctl restart fail2ban
-            echo -e "${green}IP Limit removed successfully!${plain}\n"
+            echo -e "${green}IP限制成功解除!${plain}\n"
             before_show_menu ;;
         2)  
             rm -rf /etc/fail2ban
@@ -1020,16 +1020,16 @@ remove_iplimit(){
                 fedora)
                     dnf remove fail2ban -y;;
                 *)
-                    echo -e "${red}Unsupported operating system. Please uninstall Fail2ban manually.${plain}\n"
+                    echo -e "${red}不支持的操作系统。 请手动卸载 Fail2ban。${plain}\n"
                     exit 1 ;;
             esac
-            echo -e "${green}Fail2ban and IP Limit removed successfully!${plain}\n"
+            echo -e "${green}Fail2ban 和 IP 限制删除成功！${plain}\n"
             before_show_menu ;;
         0) 
-            echo -e "${yellow}Cancelled.${plain}\n"
+            echo -e "${yellow}取消。${plain}\n"
             iplimit_main ;;
         *) 
-            echo -e "${red}Invalid option. Please select a valid number.${plain}\n"
+            echo -e "${red}选择错误${plain}\n"
             remove_iplimit ;;
     esac
 }

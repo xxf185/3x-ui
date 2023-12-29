@@ -181,7 +181,7 @@ install_x-ui() {
     echo -e "x-ui enable       - 设置 x-ui 开机自启"
     echo -e "x-ui disable      - 取消 x-ui 开机自启"
     echo -e "x-ui log          - 查看 x-ui 日志"
-    echo -e "x-ui banlog       - 查看Fail2ban禁止日志"
+    echo -e "x-ui banlog       - 查看 ban  日志"
     echo -e "x-ui update       - 更新 x-ui 面板"
     echo -e "x-ui install      - 安装 x-ui 面板"
     echo -e "x-ui uninstall    - 卸载 x-ui 面板"

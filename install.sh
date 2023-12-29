@@ -8,7 +8,7 @@ plain='\033[0m'
 cur_dir=$(pwd)
 
 # check root
-[[ $EUID -ne 0 ]] && echo -e "${red}Fatal error: ${plain} Please run this script with root privilege \n " && exit 1
+[[ $EUID -ne 0 ]] && echo -e "${red}错误： ${plain} 必须使用root用户运行此脚本！ \n " && exit 1
 
 # Check OS and set release variable
 if [[ -f /etc/os-release ]]; then
@@ -18,7 +18,7 @@ elif [[ -f /usr/lib/os-release ]]; then
     source /usr/lib/os-release
     release=$ID
 else
-    echo "Failed to check the system OS, please contact the author!" >&2
+    echo "未检测到系统版本，请联系脚本作者！" >&2
     exit 1
 fi
 echo "The OS release is: $release"
@@ -87,34 +87,34 @@ install_base() {
 
 # This function will be called when user installed x-ui out of security
 config_after_install() {
-    echo -e "${yellow}Install/update finished! For security it's recommended to modify panel settings ${plain}"
-    read -p "Do you want to continue with the modification [y/n]?": config_confirm
+    echo -e "${yellow}出于安全考虑，安装/更新完成后需要强制修改端口与账户密码 ${plain}"
+    read -p "确认是否继续? [y/n]?": config_confirm
     if [[ "${config_confirm}" == "y" || "${config_confirm}" == "Y" ]]; then
-        read -p "Please set up your username:" config_account
-        echo -e "${yellow}Your username will be:${config_account}${plain}"
-        read -p "Please set up your password:" config_password
-        echo -e "${yellow}Your password will be:${config_password}${plain}"
-        read -p "Please set up the panel port:" config_port
-        echo -e "${yellow}Your panel port is:${config_port}${plain}"
-        echo -e "${yellow}Initializing, please wait...${plain}"
+        read -p "请设置您的账户名:" config_account
+        echo -e "${yellow}您的账户名将设定为:${config_account}${plain}"
+        read -p "请设置您的账户密码:" config_password
+        echo -e "${yellow}您的账户密码将设定为:${config_password}${plain}"
+        read -p "请设置面板访问端口:" config_port
+        echo -e "${yellow}您的面板访问端口将设定为:${config_port}${plain}"
+        echo -e "${yellow}确认设定,设定中${plain}"
         /usr/local/x-ui/x-ui setting -username ${config_account} -password ${config_password}
-        echo -e "${yellow}Account name and password set successfully!${plain}"
+        echo -e "${yellow}账户密码设定完成${plain}"
         /usr/local/x-ui/x-ui setting -port ${config_port}
-        echo -e "${yellow}Panel port set successfully!${plain}"
+        echo -e "${yellow}面板端口设定完成!${plain}"
     else
-        echo -e "${red}cancel...${plain}"
+        echo -e "${red}已取消,所有设置项均为默认设置,请及时修改${plain}"
         if [[ ! -f "/etc/x-ui/x-ui.db" ]]; then
             local usernameTemp=$(head -c 6 /dev/urandom | base64)
             local passwordTemp=$(head -c 6 /dev/urandom | base64)
             /usr/local/x-ui/x-ui setting -username ${usernameTemp} -password ${passwordTemp}
-            echo -e "this is a fresh installation,will generate random login info for security concerns:"
+            echo -e "这是全新安装，出于安全考虑将生成随机登录信息："
             echo -e "###############################################"
             echo -e "${green}username:${usernameTemp}${plain}"
             echo -e "${green}password:${passwordTemp}${plain}"
             echo -e "###############################################"
-            echo -e "${red}if you forgot your login info,you can type x-ui and then type 7 to check after installation${plain}"
+            echo -e "${red}如果您忘记了登录信息，可以在安装后输入 x-ui 然后输入 7 进行检查${plain}"
         else
-            echo -e "${red} this is your upgrade,will keep old settings,if you forgot your login info,you can type x-ui and then type 7 to check${plain}"
+            echo -e "${red} 这是您的升级，将保留旧设置，如果您忘记了登录信息，您可以输入 x-ui 然后输入 7 进行检查${plain}"
         fi
     fi
     /usr/local/x-ui/x-ui migrate

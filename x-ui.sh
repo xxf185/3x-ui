@@ -19,7 +19,7 @@ function LOGI() {
 }
 
 # check root
-[[ $EUID -ne 0 ]] && LOGE "ERROR: You must be root to run this script! \n" && exit 1
+[[ $EUID -ne 0 ]] && LOGE "错误：您必须是 root 才能运行此脚本！\n" && exit 1
 
 # Check OS and set release variable
 if [[ -f /etc/os-release ]]; then
@@ -29,41 +29,41 @@ elif [[ -f /usr/lib/os-release ]]; then
     source /usr/lib/os-release
     release=$ID
 else
-    echo "Failed to check the system OS, please contact the author!" >&2
+    echo "检查系统操作系统失败，请联系作者！" >&2
     exit 1
 fi
 
-echo "The OS release is: $release"
+echo "操作系统版本是: $release"
 
 os_version=""
 os_version=$(grep -i version_id /etc/os-release | cut -d \" -f2 | cut -d . -f1)
 
 if [[ "${release}" == "centos" ]]; then
     if [[ ${os_version} -lt 8 ]]; then
-        echo -e "${red} Please use CentOS 8 or higher ${plain}\n" && exit 1
+        echo -e "${red}请使用CentOS 8或更高版本 ${plain}\n" && exit 1
     fi
 elif [[ "${release}" == "ubuntu" ]]; then
     if [[ ${os_version} -lt 20 ]]; then
-        echo -e "${red}please use Ubuntu 20 or higher version! ${plain}\n" && exit 1
+        echo -e "${red}请使用Ubuntu 20或更高版本！ ${plain}\n" && exit 1
     fi
 elif [[ "${release}" == "fedora" ]]; then
     if [[ ${os_version} -lt 36 ]]; then
-        echo -e "${red}please use Fedora 36 or higher version! ${plain}\n" && exit 1
+        echo -e "${red}请使用Fedora 36或更高版本！ ${plain}\n" && exit 1
     fi
 elif [[ "${release}" == "debian" ]]; then
     if [[ ${os_version} -lt 10 ]]; then
-        echo -e "${red} Please use Debian 10 or higher ${plain}\n" && exit 1
+        echo -e "${red} 请使用 Debian 10 或更高版本${plain}\n" && exit 1
     fi
 elif [[ "${release}" == "almalinux" ]]; then
     if [[ ${os_version} -lt 9 ]]; then
-        echo -e "${red} Please use Almalinux 9 or higher ${plain}\n" && exit 1
+        echo -e "${red} 请使用Almalinux 9或更高版本 ${plain}\n" && exit 1
     fi
 elif [[ "${release}" == "arch" ]]; then
-    echo "Your OS is ArchLinux"
+    echo "操作系统:ArchLinux"
 elif [[ "${release}" == "manjaro" ]]; then
-    echo "Your OS is Manjaro"
+    echo "操作系统:Manjaro"
 elif [[ "${release}" == "armbian" ]]; then
-    echo "Your OS is Armbian"
+    echo "操作系统:Armbian"
 fi
 
 
@@ -99,7 +99,7 @@ confirm_restart() {
 }
 
 before_show_menu() {
-    echo && echo -n -e "${yellow}Press enter to return to the main menu: ${plain}" && read temp
+    echo && echo -n -e "${yellow}按 Enter 键返回主菜单：${plain}" && read temp
     show_menu
 }
 
@@ -115,9 +115,9 @@ install() {
 }
 
 update() {
-    confirm "This function will forcefully reinstall the latest version, and the data will not be lost. Do you want to continue?" "n"
+    confirm "该功能将强制重新安装最新版本，并且数据不会丢失。 你想继续吗?" "n"
     if [[ $? != 0 ]]; then
-        LOGE "Cancelled"
+        LOGE "取消"
         if [[ $# == 0 ]]; then
             before_show_menu
         fi
@@ -125,17 +125,17 @@ update() {
     fi
     bash <(curl -Ls https://raw.githubusercontent.com/xxf185/3x-ui/master/install.sh)
     if [[ $? == 0 ]]; then
-        LOGI "Update is complete, Panel has automatically restarted "
+        LOGI "更新完成，面板已自动重启 "
         exit 0
     fi
 }
 
 custom_version() {
-    echo "Enter the panel version (like 2.0.0):"
+    echo "输入面板版本（如2.0.0）："
     read panel_version
 
     if [ -z "$panel_version" ]; then
-        echo "Panel version cannot be empty. Exiting."
+        echo "面板版本不能为空。 退出。"
     exit 1
     fi
 
@@ -144,12 +144,12 @@ custom_version() {
     # Use the entered panel version in the download link
     install_command="bash <(curl -Ls $download_link) v$panel_version"
 
-    echo "Downloading and installing panel version $panel_version..."
+    echo "下载并安装面板版本$panel_version..."
     eval $install_command
 }
 
 uninstall() {
-    confirm "Are you sure you want to uninstall the panel? xray will also uninstalled!" "n"
+    confirm "您确定要卸载面板吗？xray也将被卸载!" "n"
     if [[ $? != 0 ]]; then
         if [[ $# == 0 ]]; then
             show_menu
@@ -165,7 +165,7 @@ uninstall() {
     rm /usr/local/x-ui/ -rf
 
     echo ""
-    echo -e "Uninstalled Successfully, If you want to remove this script, then after exiting the script run ${green}rm /usr/bin/x-ui -f${plain} to delete it."
+    echo -e "卸载成功，如果要删除此脚本，则退出脚本后运行${green}rm /usr/bin/x-ui -f${plain} 删除它。"
     echo ""
 
     if [[ $# == 0 ]]; then
@@ -174,28 +174,28 @@ uninstall() {
 }
 
 reset_user() {
-    confirm "Are you sure to reset the username and password of the panel?" "n"
+    confirm "您确定重置面板的用户名和密码吗?" "n"
     if [[ $? != 0 ]]; then
         if [[ $# == 0 ]]; then
             show_menu
         fi
         return 0
     fi
-    read -rp "Please set the login username [default is a random username]: " config_account
+    read -rp "请设置登录用户名【默认为随机用户名】: " config_account
     [[ -z $config_account ]] && config_account=$(date +%s%N | md5sum | cut -c 1-8)
-    read -rp "Please set the login password [default is a random password]: " config_password
+    read -rp "请设置登录密码【默认为随机密码】: " config_password
     [[ -z $config_password ]] && config_password=$(date +%s%N | md5sum | cut -c 1-8)
     /usr/local/x-ui/x-ui setting -username ${config_account} -password ${config_password} >/dev/null 2>&1
     /usr/local/x-ui/x-ui setting -remove_secret >/dev/null 2>&1
-    echo -e "Panel login username has been reset to: ${green} ${config_account} ${plain}"
-    echo -e "Panel login password has been reset to: ${green} ${config_password} ${plain}"
-    echo -e "${yellow} Panel login secret token disabled ${plain}"
-    echo -e "${green} Please use the new login username and password to access the X-UI panel. Also remember them! ${plain}"
+    echo -e "面板登录用户名已重置为: ${green} ${config_account} ${plain}"
+    echo -e "面板登录密码已重置为: ${green} ${config_password} ${plain}"
+    echo -e "${yellow} 面板登录密码已禁用${plain}"
+    echo -e "${green} 请使用新的登录用户名和密码访问X-UI面板。 也记住他们! ${plain}"
     confirm_restart
 }
 
 reset_config() {
-    confirm "Are you sure you want to reset all panel settings, Account data will not be lost, Username and password will not change" "n"
+    confirm "您确定要重置所有面板设置，帐户数据不会丢失，用户名和密码不会更改" "n"
     if [[ $? != 0 ]]; then
         if [[ $# == 0 ]]; then
             show_menu
@@ -203,27 +203,27 @@ reset_config() {
         return 0
     fi
     /usr/local/x-ui/x-ui setting -reset
-    echo -e "All panel settings have been reset to default, Please restart the panel now, and use the default ${green}2053${plain} Port to Access the web Panel"
+    echo -e "所有面板设置已重置为默认值，请立即重新启动面板，并使用默认 ${green}2053${plain}访问Web面板的端口"
     confirm_restart
 }
 
 check_config() {
     info=$(/usr/local/x-ui/x-ui setting -show true)
     if [[ $? != 0 ]]; then
-        LOGE "get current settings error, please check logs"
+        LOGE "设置错误，请检查日志"
         show_menu
     fi
     LOGI "${info}"
 }
 
 set_port() {
-    echo && echo -n -e "Enter port number[1-65535]: " && read port
+    echo && echo -n -e "输入端口号[1-65535]: " && read port
     if [[ -z "${port}" ]]; then
-        LOGD "Cancelled"
+        LOGD "取消"
         before_show_menu
     else
         /usr/local/x-ui/x-ui setting -port ${port}
-        echo -e "The port is set, Please restart the panel now, and use the new port ${green}${port}${plain} to access web panel"
+        echo -e "端口已设置，请立即重启面板，并使用新端口 ${green}${port}${plain} 访问网页面板"
         confirm_restart
     fi
 }
@@ -232,15 +232,15 @@ start() {
     check_status
     if [[ $? == 0 ]]; then
         echo ""
-        LOGI "Panel is running, No need to start again, If you need to restart, please select restart"
+        LOGI "面板正在运行，无需再次启动，如需重新启动，请选择重新启动"
     else
         systemctl start x-ui
         sleep 2
         check_status
         if [[ $? == 0 ]]; then
-            LOGI "x-ui Started Successfully"
+            LOGI "x-ui启动成功"
         else
-            LOGE "panel Failed to start, Probably because it takes longer than two seconds to start, Please check the log information later"
+            LOGE "面板启动失败，可能是启动时间超过两秒，请稍后查看日志信息"
         fi
     fi
 
@@ -253,15 +253,15 @@ stop() {
     check_status
     if [[ $? == 1 ]]; then
         echo ""
-        LOGI "Panel stopped, No need to stop again!"
+        LOGI "面板已停止"
     else
         systemctl stop x-ui
         sleep 2
         check_status
         if [[ $? == 1 ]]; then
-            LOGI "x-ui and xray stopped successfully"
+            LOGI "x-ui 和 xray 成功停止"
         else
-            LOGE "Panel stop failed, Probably because the stop time exceeds two seconds, Please check the log information later"
+            LOGE "面板停止失败，可能是停止时间超过两秒，请稍后查看日志信息"
         fi
     fi
 
@@ -275,9 +275,9 @@ restart() {
     sleep 2
     check_status
     if [[ $? == 0 ]]; then
-        LOGI "x-ui and xray Restarted successfully"
+        LOGI "x-ui 和 xray 重新启动成功"
     else
-        LOGE "Panel restart failed, Probably because it takes longer than two seconds to start, Please check the log information later"
+        LOGE "面板重启失败，可能是启动时间超过两秒，请稍后查看日志信息"
     fi
     if [[ $# == 0 ]]; then
         before_show_menu
@@ -294,9 +294,9 @@ status() {
 enable() {
     systemctl enable x-ui
     if [[ $? == 0 ]]; then
-        LOGI "x-ui Set to boot automatically on startup successfully"
+        LOGI "x-ui 设置启动成功后自动启动"
     else
-        LOGE "x-ui Failed to set Autostart"
+        LOGE "x-ui 设置自动启动失败"
     fi
 
     if [[ $# == 0 ]]; then
@@ -307,9 +307,9 @@ enable() {
 disable() {
     systemctl disable x-ui
     if [[ $? == 0 ]]; then
-        LOGI "x-ui Autostart Cancelled successfully"
+        LOGI "x-ui 自动启动已成功取消"
     else
-        LOGE "x-ui Failed to cancel autostart"
+        LOGE "x-ui 取消自动启动失败"
     fi
 
     if [[ $# == 0 ]]; then
@@ -329,16 +329,16 @@ show_banlog() {
     if [[ -s "${iplimit_banned_log_path}" ]]; then
       cat ${iplimit_banned_log_path}
     else
-      echo -e "${red}Log file is empty.${plain}\n"  
+      echo -e "${red}日志文件为空。${plain}\n"  
     fi
   else
-    echo -e "${red}Log file not found. Please Install Fail2ban and IP Limit first.${plain}\n"
+    echo -e "${red}未找到日志文件。 请先安装 Fail2ban 和 IP Limit。${plain}\n"
   fi
 }
 
 enable_bbr() {
     if grep -q "net.core.default_qdisc=fq" /etc/sysctl.conf && grep -q "net.ipv4.tcp_congestion_control=bbr" /etc/sysctl.conf; then
-        echo -e "${green}BBR is already enabled!${plain}"
+        echo -e "${green}BBR 已启用！${plain}"
         exit 0
     fi
 
@@ -354,7 +354,7 @@ enable_bbr() {
             dnf -y update && dnf -y install ca-certificates
             ;;
         *)
-            echo -e "${red}Unsupported operating system. Please check the script and install the necessary packages manually.${plain}\n"
+            echo -e "${red}不支持的操作系统。 请检查脚本并手动安装必要的软件包。${plain}\n"
             exit 1
             ;;
     esac
@@ -368,9 +368,9 @@ enable_bbr() {
 
     # Verify that BBR is enabled
     if [[ $(sysctl net.ipv4.tcp_congestion_control | awk '{print $3}') == "bbr" ]]; then
-        echo -e "${green}BBR has been enabled successfully.${plain}"
+        echo -e "${green}BBR已成功启用。${plain}"
     else
-        echo -e "${red}Failed to enable BBR. Please check your system configuration.${plain}"
+        echo -e "${red}启用 BBR 失败。 请检查您的系统配置。${plain}"
     fi
 }
 
@@ -378,11 +378,11 @@ update_shell() {
     wget -O /usr/bin/x-ui -N --no-check-certificate https://github.com/xxf185/3x-ui/raw/master/x-ui.sh
     if [[ $? != 0 ]]; then
         echo ""
-        LOGE "Failed to download script, Please check whether the machine can connect Github"
+        LOGE "下载脚本失败，请检查是否可以连接Github"
         before_show_menu
     else
         chmod +x /usr/bin/x-ui
-        LOGI "Upgrade script succeeded, Please rerun the script" && exit 0
+        LOGI "更新脚本成功，请重新运行脚本" && exit 0
     fi
 }
 
@@ -412,7 +412,7 @@ check_uninstall() {
     check_status
     if [[ $? != 2 ]]; then
         echo ""
-        LOGE "Panel installed, Please do not reinstall"
+        LOGE "面板已安装，请勿重新安装"
         if [[ $# == 0 ]]; then
             before_show_menu
         fi
@@ -426,7 +426,7 @@ check_install() {
     check_status
     if [[ $? == 2 ]]; then
         echo ""
-        LOGE "Please install the panel first"
+        LOGE "请先安装面板"
         if [[ $# == 0 ]]; then
             before_show_menu
         fi
@@ -440,15 +440,15 @@ show_status() {
     check_status
     case $? in
     0)
-        echo -e "Panel state: ${green}Running${plain}"
+        echo -e "面板状态：${green}运行${plain}"
         show_enable_status
         ;;
     1)
-        echo -e "Panel state: ${yellow}Not Running${plain}"
+        echo -e "面板状态: ${yellow}未运行${plain}"
         show_enable_status
         ;;
     2)
-        echo -e "Panel state: ${red}Not Installed${plain}"
+        echo -e "面板状态: ${red}未安装${plain}"
         ;;
     esac
     show_xray_status
@@ -457,9 +457,9 @@ show_status() {
 show_enable_status() {
     check_enabled
     if [[ $? == 0 ]]; then
-        echo -e "Start automatically: ${green}Yes${plain}"
+        echo -e "自动启动: ${green}Yes${plain}"
     else
-        echo -e "Start automatically: ${red}No${plain}"
+        echo -e "自动启动: ${red}No${plain}"
     fi
 }
 
@@ -475,24 +475,24 @@ check_xray_status() {
 show_xray_status() {
     check_xray_status
     if [[ $? == 0 ]]; then
-        echo -e "xray state: ${green}Running${plain}"
+        echo -e "xray状态: ${green}运行${plain}"
     else
-        echo -e "xray state: ${red}Not Running${plain}"
+        echo -e "xray状态: ${red}未运行${plain}"
     fi
 }
 
 open_ports() {
     if ! command -v ufw &>/dev/null; then
-        echo "ufw firewall is not installed. Installing now..."
+        echo "ufw防火墙未安装。 正在安装..."
         apt-get update
         apt-get install -y ufw
     else
-        echo "ufw firewall is already installed"
+        echo "ufw防火墙已经安装"
     fi
 
     # Check if the firewall is inactive
     if ufw status | grep -q "Status: active"; then
-        echo "firewall is already active"
+        echo "防火墙已经开启"
     else
         # Open the necessary ports
         ufw allow ssh
@@ -505,11 +505,11 @@ open_ports() {
     fi
 
     # Prompt the user to enter a list of ports
-    read -p "Enter the ports you want to open (e.g. 80,443,2053 or range 400-500): " ports
+    read -p "输入您要打开的端口（例如 80,443,2053 或范围 400-500）：" ports
 
     # Check if the input is valid
     if ! [[ $ports =~ ^([0-9]+|[0-9]+-[0-9]+)(,([0-9]+|[0-9]+-[0-9]+))*$ ]]; then
-        echo "Error: Invalid input. Please enter a comma-separated list of ports or a range of ports (e.g. 80,443,2053 or 400-500)." >&2
+        echo "错误：输入无效。 请输入以逗号分隔的端口列表或端口范围（例如 80,443,2053 或 400-500）。" >&2
         exit 1
     fi
 
@@ -535,11 +535,11 @@ open_ports() {
 
 update_geo() {
     local defaultBinFolder="/usr/local/x-ui/bin"
-    read -p "Please enter x-ui bin folder path. Leave blank for default. (Default: '${defaultBinFolder}')" binFolder
+    read -p "请输入 x-ui bin 文件夹路径。 默认留空。(默认: '${defaultBinFolder}')" binFolder
     binFolder=${binFolder:-${defaultBinFolder}}
     if [[ ! -d ${binFolder} ]]; then
-        LOGE "Folder ${binFolder} not exists!"
-        LOGI "making bin folder: ${binFolder}..."
+        LOGE "文件夹 ${binFolder} 不存在！"
+        LOGI "新建 bin 文件夹：${binFolder}..."
         mkdir -p ${binFolder}
     fi
 
@@ -559,23 +559,23 @@ update_geo() {
 
 install_acme() {
     cd ~
-    LOGI "install acme..."
+    LOGI "安装acme..."
     curl https://get.acme.sh | sh
     if [ $? -ne 0 ]; then
-        LOGE "install acme failed"
+        LOGE "安装 acme 失败"
         return 1
     else
-        LOGI "install acme succeed"
+        LOGI "安装acme成功"
     fi
     return 0
 }
 
 ssl_cert_issue_main() {
-    echo -e "${green}\t1.${plain} Get SSL"
-    echo -e "${green}\t2.${plain} Revoke"
-    echo -e "${green}\t3.${plain} Force Renew"
-    echo -e "${green}\t0.${plain} Back to Main Menu"
-    read -p "Choose an option: " choice
+    echo -e "${green}\t1.${plain} 获取证书"
+    echo -e "${green}\t2.${plain} 删除证书"
+    echo -e "${green}\t3.${plain} 更新证书"
+    echo -e "${green}\t0.${plain} 返回主菜单"
+    read -p "选择: " choice
     case "$choice" in
         0)
             show_menu ;;
@@ -583,25 +583,25 @@ ssl_cert_issue_main() {
             ssl_cert_issue ;;
         2) 
             local domain=""
-            read -p "Please enter your domain name to revoke the certificate: " domain
+            read -p "请输入您的域名以删除证书：" domain
             ~/.acme.sh/acme.sh --revoke -d ${domain}
-            LOGI "Certificate revoked"
+            LOGI "证书已删除"
             ;;
         3)
             local domain=""
-            read -p "Please enter your domain name to forcefully renew an SSL certificate: " domain
+            read -p "请输入您的域名以更新SSL 证书: " domain
             ~/.acme.sh/acme.sh --renew -d ${domain} --force ;;
-        *) echo "Invalid choice" ;;
+        *) echo "选择无效" ;;
     esac
 }
 
 ssl_cert_issue() {
     # check for acme.sh first
     if ! command -v ~/.acme.sh/acme.sh &>/dev/null; then
-        echo "acme.sh could not be found. we will install it"
+        echo "acme.sh 未找到.安装中"
         install_acme
         if [ $? -ne 0 ]; then
-            LOGE "install acme failed, please check logs"
+            LOGE "安装acme失败，请检查日志"
             exit 1
         fi
     fi
@@ -614,30 +614,30 @@ ssl_cert_issue() {
         fedora)
             dnf -y update && dnf -y install socat ;;
         *)
-            echo -e "${red}Unsupported operating system. Please check the script and install the necessary packages manually.${plain}\n"
+            echo -e "${red}不支持的操作系统。 请检查脚本并手动安装必要的软件包。${plain}\n"
             exit 1 ;;
     esac
     if [ $? -ne 0 ]; then
-        LOGE "install socat failed, please check logs"
+        LOGE "安装socat失败，请检查日志"
         exit 1
     else
-        LOGI "install socat succeed..."
+        LOGI "安装socat成功..."
     fi
 
     # get the domain here,and we need verify it
     local domain=""
-    read -p "Please enter your domain name:" domain
-    LOGD "your domain is:${domain},check it..."
+    read -p "请输入您的域名：" domain
+    LOGD "您的域名:${domain},check it..."
     # here we need to judge whether there exists cert already
     local currentCert=$(~/.acme.sh/acme.sh --list | tail -1 | awk '{print $1}')
 
     if [ ${currentCert} == ${domain} ]; then
         local certInfo=$(~/.acme.sh/acme.sh --list)
-        LOGE "system already has certs here,can not issue again,current certs details:"
+        LOGE "系统已经有证书，无法再次颁发，当前证书详细信息:"
         LOGI "$certInfo"
         exit 1
     else
-        LOGI "your domain is ready for issuing cert now..."
+        LOGI "您的域名现在已准备好颁发证书..."
     fi
 
     # create a directory for install cert
@@ -651,21 +651,21 @@ ssl_cert_issue() {
 
     # get needed port here
     local WebPort=80
-    read -p "please choose which port do you use,default will be 80 port:" WebPort
+    read -p "请选择端口，默认为 80 端口：" WebPort
     if [[ ${WebPort} -gt 65535 || ${WebPort} -lt 1 ]]; then
-        LOGE "your input ${WebPort} is invalid,will use default port"
+        LOGE "您输入的 ${WebPort} 无效，将使用默认端口"
     fi
-    LOGI "will use port:${WebPort} to issue certs,please make sure this port is open..."
+    LOGI "将使用端口：${WebPort} 来颁发证书，请确保此端口已开放"
     # NOTE:This should be handled by user
     # open the port and kill the occupied progress
     ~/.acme.sh/acme.sh --set-default-ca --server letsencrypt
     ~/.acme.sh/acme.sh --issue -d ${domain} --standalone --httpport ${WebPort}
     if [ $? -ne 0 ]; then
-        LOGE "issue certs failed,please check logs"
+        LOGE "颁发证书失败，请检查日志"
         rm -rf ~/.acme.sh/${domain}
         exit 1
     else
-        LOGE "issue certs succeed,installing certs..."
+        LOGE "颁发证书成功，正在安装证书..."
     fi
     # install cert
     ~/.acme.sh/acme.sh --installcert -d ${domain} \
@@ -673,21 +673,21 @@ ssl_cert_issue() {
         --fullchain-file /root/cert/${domain}/fullchain.pem
 
     if [ $? -ne 0 ]; then
-        LOGE "install certs failed,exit"
+        LOGE "安装证书失败，退出"
         rm -rf ~/.acme.sh/${domain}
         exit 1
     else
-        LOGI "install certs succeed,enable auto renew..."
+        LOGI "安装证书成功，启用自动更新"
     fi
 
     ~/.acme.sh/acme.sh --upgrade --auto-upgrade
     if [ $? -ne 0 ]; then
-        LOGE "auto renew failed, certs details:"
+        LOGE "自动更新失败，证书详细信息:"
         ls -lah cert/*
         chmod 755 $certPath/*
         exit 1
     else
-        LOGI "auto renew succeed, certs details:"
+        LOGI "自动更新成功，证书详细信息:"
         ls -lah cert/*
         chmod 755 $certPath/*
     fi

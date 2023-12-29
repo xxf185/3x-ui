@@ -695,13 +695,13 @@ ssl_cert_issue() {
 
 ssl_cert_issue_CF() {
     echo -E ""
-    LOGD "******Instructions for use******"
-    LOGI "This Acme script requires the following data:"
-    LOGI "1.Cloudflare Registered e-mail"
-    LOGI "2.Cloudflare Global API Key"
-    LOGI "3.The domain name that has been resolved dns to the current server by Cloudflare"
-    LOGI "4.The script applies for a certificate. The default installation path is /root/cert "
-    confirm "Confirmed?[y/n]" "y"
+    LOGD "******使用说明******"
+    LOGI "该脚本将使用Acme脚本申请证书,使用时需保证:"
+    LOGI "1.知晓Cloudflare 注册邮箱"
+    LOGI "2.知晓Cloudflare Global API Key"
+    LOGI "3.域名已通过Cloudflare进行解析到当前服务器"
+    LOGI "4.该脚本申请证书默认安装路径为/root/cert目录"
+    confirm "我已确认以上内容[y/n]" "y"
     if [ $? -eq 0 ]; then
         # check for acme.sh first
         if ! command -v ~/.acme.sh/acme.sh &>/dev/null; then
@@ -722,46 +722,46 @@ ssl_cert_issue_CF() {
             rm -rf $certPath
             mkdir $certPath
         fi
-        LOGD "Please set a domain name:"
+        LOGD "请设置域名:"
         read -p "Input your domain here:" CF_Domain
-        LOGD "Your domain name is set to:${CF_Domain}"
-        LOGD "Please set the API key:"
+        LOGD "你的域名设置为:${CF_Domain}"
+        LOGD "请设置API密钥:"
         read -p "Input your key here:" CF_GlobalKey
-        LOGD "Your API key is:${CF_GlobalKey}"
-        LOGD "Please set up registered email:"
+        LOGD "你的API密钥为:${CF_GlobalKey}"
+        LOGD "请设置注册邮箱:"
         read -p "Input your email here:" CF_AccountEmail
-        LOGD "Your registered email address is:${CF_AccountEmail}"
+        LOGD "你的注册邮箱为:${CF_AccountEmail}"
         ~/.acme.sh/acme.sh --set-default-ca --server letsencrypt
         if [ $? -ne 0 ]; then
-            LOGE "Default CA, Lets'Encrypt fail, script exiting..."
+            LOGE "修改默认CA为Lets'Encrypt失败,脚本退出"
             exit 1
         fi
         export CF_Key="${CF_GlobalKey}"
         export CF_Email=${CF_AccountEmail}
         ~/.acme.sh/acme.sh --issue --dns dns_cf -d ${CF_Domain} -d *.${CF_Domain} --log
         if [ $? -ne 0 ]; then
-            LOGE "Certificate issuance failed, script exiting..."
+            LOGE "证书签发失败,脚本退出."
             exit 1
         else
-            LOGI "Certificate issued Successfully, Installing..."
+            LOGI "证书签发成功,安装中..."
         fi
         ~/.acme.sh/acme.sh --installcert -d ${CF_Domain} -d *.${CF_Domain} --ca-file /root/cert/ca.cer \
         --cert-file /root/cert/${CF_Domain}.cer --key-file /root/cert/${CF_Domain}.key \
         --fullchain-file /root/cert/fullchain.cer
         if [ $? -ne 0 ]; then
-            LOGE "Certificate installation failed, script exiting..."
+            LOGE "证书安装失败,脚本退出"
             exit 1
         else
-            LOGI "Certificate installed Successfully,Turning on automatic updates..."
+            LOGI "证书安装成功,开启自动更新..."
         fi
         ~/.acme.sh/acme.sh --upgrade --auto-upgrade
         if [ $? -ne 0 ]; then
-            LOGE "Auto update setup Failed, script exiting..."
+            LOGE "自动更新设置失败,脚本退出"
             ls -lah cert
             chmod 755 $certPath
             exit 1
         else
-            LOGI "The certificate is installed and auto-renewal is turned on, Specific information is as follows"
+            LOGI "证书已安装且已开启自动更新,具体信息如下"
             ls -lah cert
             chmod 755 $certPath
         fi
@@ -771,12 +771,12 @@ ssl_cert_issue_CF() {
 }
 
 warp_cloudflare() {
-    echo -e "${green}\t1.${plain} Install WARP socks5 proxy"
-    echo -e "${green}\t2.${plain} Account Type (free, plus, team)"
-    echo -e "${green}\t3.${plain} Turn on/off WireProxy"
-    echo -e "${green}\t4.${plain} Uninstall WARP"
-    echo -e "${green}\t0.${plain} Back to Main Menu"
-    read -p "Choose an option: " choice
+    echo -e "${green}\t1.${plain} 安装 WARPocks5 代理"
+    echo -e "${green}\t2.${plain} 帐户类型（免费、附加、团队）"
+    echo -e "${green}\t3.${plain} 打开/关闭 WireProxy"
+    echo -e "${green}\t4.${plain} 卸载WARP"
+    echo -e "${green}\t0.${plain} 返回主菜单"
+    read -p "选择：" choice
     case "$choice" in
         0)
             show_menu ;;

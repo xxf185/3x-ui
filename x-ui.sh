@@ -781,7 +781,7 @@ warp_cloudflare() {
         0)
             show_menu ;;
         1) 
-            bash <(curl -sSL https://raw.githubusercontent.com//x-ui-scripts/main/install_warp_proxy.sh)
+            bash <(curl -sSL https://raw.githubusercontent.com/xxf185/x-ui-scripts/main/install_warp_proxy.sh)
             ;;
         2) 
             warp a

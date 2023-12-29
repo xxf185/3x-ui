@@ -19,7 +19,7 @@ function LOGI() {
 }
 
 # check root
-[[ $EUID -ne 0 ]] && LOGE "错误：您必须是 root 才能运行此脚本！\n" && exit 1
+[[ $EUID -ne 0 ]] && LOGE "错误.必须是root用户才能运行此脚本！\n" && exit 1
 
 # Check OS and set release variable
 if [[ -f /etc/os-release ]]; then
@@ -29,7 +29,7 @@ elif [[ -f /usr/lib/os-release ]]; then
     source /usr/lib/os-release
     release=$ID
 else
-    echo "检查系统操作系统失败，请联系作者！" >&2
+    echo "检查系统操作系统失败" >&2
     exit 1
 fi
 
@@ -90,7 +90,7 @@ confirm() {
 }
 
 confirm_restart() {
-    confirm "Restart the panel, Attention: Restarting the panel will also restart xray" "y"
+    confirm "注意.重启面板也会重启xray" "y"
     if [[ $? == 0 ]]; then
         restart
     else
@@ -99,7 +99,7 @@ confirm_restart() {
 }
 
 before_show_menu() {
-    echo && echo -n -e "${yellow}按 Enter 键返回主菜单：${plain}" && read temp
+    echo && echo -n -e "${yellow}按Enter键返回主菜单：${plain}" && read temp
     show_menu
 }
 
@@ -115,7 +115,7 @@ install() {
 }
 
 update() {
-    confirm "该功能将强制重新安装最新版本，并且数据不会丢失。 你想继续吗?" "n"
+    confirm "强制重新安装最新版本.并且数据不会丢失.继续吗?" "n"
     if [[ $? != 0 ]]; then
         LOGE "取消"
         if [[ $# == 0 ]]; then
@@ -135,7 +135,7 @@ custom_version() {
     read panel_version
 
     if [ -z "$panel_version" ]; then
-        echo "面板版本不能为空。 退出。"
+        echo "面板版本不能为空"
     exit 1
     fi
 
@@ -149,7 +149,7 @@ custom_version() {
 }
 
 uninstall() {
-    confirm "您确定要卸载面板吗？xray也将被卸载!" "n"
+    confirm "确定卸载面板吗？xray也将被卸载!" "n"
     if [[ $? != 0 ]]; then
         if [[ $# == 0 ]]; then
             show_menu
@@ -165,7 +165,7 @@ uninstall() {
     rm /usr/local/x-ui/ -rf
 
     echo ""
-    echo -e "卸载成功，如果要删除此脚本，则退出脚本后运行${green}rm /usr/bin/x-ui -f${plain} 删除它。"
+    echo -e "卸载成功，如果要删除此脚本，则退出脚本后运行${green}rm /usr/bin/x-ui -f${plain}删除它。"
     echo ""
 
     if [[ $# == 0 ]]; then
@@ -174,7 +174,7 @@ uninstall() {
 }
 
 reset_user() {
-    confirm "您确定重置面板的用户名和密码吗?" "n"
+    confirm "确定重置面板的用户名和密码吗?" "n"
     if [[ $? != 0 ]]; then
         if [[ $# == 0 ]]; then
             show_menu
@@ -189,13 +189,13 @@ reset_user() {
     /usr/local/x-ui/x-ui setting -remove_secret >/dev/null 2>&1
     echo -e "面板登录用户名已重置为: ${green} ${config_account} ${plain}"
     echo -e "面板登录密码已重置为: ${green} ${config_password} ${plain}"
-    echo -e "${yellow} 面板登录密码已禁用${plain}"
-    echo -e "${green} 请使用新的登录用户名和密码访问X-UI面板。 也记住他们! ${plain}"
+    echo -e "${yellow} 面板登录密码已更改${plain}"
+    echo -e "${green} 使用新的登录用户名和密码访问X-UI面板${plain}"
     confirm_restart
 }
 
 reset_config() {
-    confirm "您确定要重置所有面板设置，帐户数据不会丢失，用户名和密码不会更改" "n"
+    confirm "确定要重置面板设置，帐户数据不会丢失，用户名和密码不会更改" "n"
     if [[ $? != 0 ]]; then
         if [[ $# == 0 ]]; then
             show_menu
@@ -203,14 +203,14 @@ reset_config() {
         return 0
     fi
     /usr/local/x-ui/x-ui setting -reset
-    echo -e "所有面板设置已重置为默认值，请立即重新启动面板，并使用默认 ${green}2053${plain}访问Web面板的端口"
+    echo -e "面板设置已重置为默认值，请立即重新启动面板，并使用默认 ${green}2053${plain}访问Web面板的端口"
     confirm_restart
 }
 
 check_config() {
     info=$(/usr/local/x-ui/x-ui setting -show true)
     if [[ $? != 0 ]]; then
-        LOGE "设置错误，请检查日志"
+        LOGE "设置错误"
         show_menu
     fi
     LOGI "${info}"
@@ -223,7 +223,7 @@ set_port() {
         before_show_menu
     else
         /usr/local/x-ui/x-ui setting -port ${port}
-        echo -e "端口已设置，请立即重启面板，并使用新端口 ${green}${port}${plain} 访问网页面板"
+        echo -e "端口已设置，请立即重启面板，并使用新端口 ${green}${port}${plain} 访问面板"
         confirm_restart
     fi
 }
@@ -232,7 +232,7 @@ start() {
     check_status
     if [[ $? == 0 ]]; then
         echo ""
-        LOGI "面板正在运行，无需再次启动，如需重新启动，请选择重新启动"
+        LOGI "面板正在运行，无需再次启动"
     else
         systemctl start x-ui
         sleep 2
@@ -294,9 +294,9 @@ status() {
 enable() {
     systemctl enable x-ui
     if [[ $? == 0 ]]; then
-        LOGI "x-ui 设置启动成功后自动启动"
+        LOGI "x-ui 设置开机自启"
     else
-        LOGE "x-ui 设置自动启动失败"
+        LOGE "x-ui 设置开机自启失败"
     fi
 
     if [[ $# == 0 ]]; then
@@ -307,9 +307,9 @@ enable() {
 disable() {
     systemctl disable x-ui
     if [[ $? == 0 ]]; then
-        LOGI "x-ui 自动启动已成功取消"
+        LOGI "x-ui 设置开机自启成功取消"
     else
-        LOGE "x-ui 取消自动启动失败"
+        LOGE "x-ui 取消开机自启失败"
     fi
 
     if [[ $# == 0 ]]; then
@@ -332,7 +332,7 @@ show_banlog() {
       echo -e "${red}日志文件为空。${plain}\n"  
     fi
   else
-    echo -e "${red}未找到日志文件。 请先安装 Fail2ban 和 IP Limit。${plain}\n"
+    echo -e "${red}未找到日志文件请先安装 Fail2ban 和 IP Limit。${plain}\n"
   fi
 }
 
